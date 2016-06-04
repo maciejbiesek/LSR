@@ -21,15 +21,18 @@ channels=[]
 
 height, width, channels = gpA.shape
 
-G=gpA[1]
-for i in range(height):
-	for j in range(width):
-            
-		print i, j
-		a=(gpA[1][i][j]+gpA[2][i][j]+gpA[3][i][j]+gpA[4][i][j]+gpA[5][i][j]+gpA[6][i][j])/6
-		G.insert(i, j, a)
+final = gpA[0].copy()
+#b, g, r = cv2.split(G)
 
-cv2.imwrite('pyramide_all.png', G)		            
+for i in range(height):
+    for j in range(width):
+        lst = np.array([gpA[x][i][j] for x in range(6)])
+        mean = lst.mean(axis = 0)
+        #print final[i][j]
+        #print mean
+        final[i][j] = mean
+        
+cv2.imwrite('pyramide_all.png', final)		            
             
 '''
 cv2.imwrite('pyramide0.png', gpA[0])
