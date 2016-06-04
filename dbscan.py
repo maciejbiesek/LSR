@@ -86,7 +86,6 @@ for i in range(1):
     print "Reshaping"
     #reshape the image to be a list of pixels
     image_list = lab_image.reshape((lab_image.shape[0] * lab_image.shape[1], 3))
-    image_list = image_list[:10000]
     
     print "Compute DBSCAN"
     db = DBSCAN(eps=2, min_samples=10).fit(image_list)
