@@ -11,15 +11,13 @@ for i in xrange(6):
 	gpA.append(G)
 
 for i in range(1,6):
-	G=gpA[i]
-	G=cv2.pyrUp(G)
-	gpA.insert(i, G)
+	G = gpA[i]
+	for j in range(i):
+		G = cv2.pyrUp(G)
+	gpA[i] = G
 
-height=[]
-width=[]
-channels=[]
 
-height, width, channels = gpA.shape
+height, width, channels = gpA[0].shape
 
 final = gpA[0].copy()
 #b, g, r = cv2.split(G)
