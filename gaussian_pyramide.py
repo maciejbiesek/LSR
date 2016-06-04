@@ -28,6 +28,12 @@ def create_final_image():
 	height, width, channels = gpA[0].shape
 	final = gpA[0].copy()
 
+for i in range(1,6):
+	G = gpA[i]
+	for j in range(i):
+		G = cv2.pyrUp(G)
+	gpA[i] = G
+
 	for i in range(height):
 		for j in range(width):
 			lst = np.array(get_list(gpA, i, j))
