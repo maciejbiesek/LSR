@@ -77,7 +77,14 @@ for i in range(1):
 				mean = lst.mean(axis = 0)
 				sub.color = mean
 				lab_image[i][j] = mean
-
-	fin = cv2.cvtColor(lab_image, cv2.COLOR_LAB2BGR)
+	
+	 
+	sigma = 1, threshold = 5, amount = 1
+	cv2.GaussianBlur(lab_image, blurred, Size(), sigma, sigma)
+	lowContrastMask = abs(lab_image - blurred) < threshold
+	sharpened = lab_image*(1+amount) + blurred*(-amount)
+	lab_image.copyTo(sharpened, lowContrastMask)
+	
+	fin = cv2.cvtColor(sharpened, cv2.COLOR_LAB2BGR)
 	path = "../output/" + "pyr_" + file_name
 	cv2.imwrite(path, fin)
