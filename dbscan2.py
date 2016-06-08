@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import pixel as pix
 import ntpath
+import fuzzy as fz
 import glob
 from scipy.stats import mode
 import utils
@@ -45,7 +46,7 @@ def get_submatrix(matrix, x, y):
     #return submatrix
 
 def get_closest(not_sim_list, mode):
-    closest_list = [elem for elem in not_sim_list if abs(elem.distance - mode) < 2]
+    closest_list = [elem for elem in not_sim_list if fz.is_near.eval(lab = abs(elem.distance - mode))]
     
     return closest_list
 
@@ -56,7 +57,7 @@ def denoise(indices, img):
 def change_color(img, x, y):
     sub = get_submatrix(img, x, y)
                 
-    not_similiar = [elem for elem in sub.neighbourhood if elem.distance > 2]
+    not_similiar = [elem for elem in sub.neighbourhood if fz.not_similiar.eval(lab = elem.distance)]
                 
     distances = [elem.distance for elem in not_similiar]
     dominant = mode(distances)
@@ -92,14 +93,13 @@ for i in range(1):
 
     img = cv2.imread(files[i])
     lab_image = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-    lab_image = lab_image[:1000, :1000]
     
     print lab_image
     
     image_list, indices = reshape(lab_image)
     
     print "Compute DBSCAN"
-    db = DBSCAN(eps=0.3, min_samples=10).fit(image_list)
+    db = DBSCAN(eps=2, min_samples=10).fit(image_list)
     core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
     core_samples_mask[db.core_sample_indices_] = True
     labels = db.labels_

@@ -5,6 +5,7 @@ import numpy as np
 import pixel as pix
 import ntpath
 import glob
+import fuzzy as fz
 from scipy.stats import mode
 import utils
 
@@ -40,7 +41,7 @@ def get_submatrix(matrix, x, y):
     #return submatrix
     
 def get_closest(not_sim_list, mode):
-    closest_list = [elem for elem in not_sim_list if abs(elem.distance - mode) < 2]
+    closest_list = [elem for elem in not_sim_list if fz.is_near.eval(lab = abs(elem.distance - mode))]
     
     return closest_list
 
@@ -83,10 +84,10 @@ for i in range(1):
             
             sub = get_submatrix(lab_image, i, j)
                 
-            not_similiar = [elem for elem in sub.neighbourhood if elem.distance > 2]
+            not_similiar = [elem for elem in sub.neighbourhood if fz.not_similiar.eval(lab = elem.distance)]
 
             num = float(len(not_similiar)) / len(sub.neighbourhood)
-            if (num > 0.3):
+            if (fz.is_noised.eval(neighbours = num)):
                 colors = [elem.color for elem in sub.neighbourhood]
                 
                 clt = KMeans(n_clusters = 2)
@@ -102,12 +103,10 @@ for i in range(1):
                 sub.color = color
                 lab_image[i][j] = color
                 
-                ## zakomentuj
                 #distances = [elem.distance for elem in not_similiar]
                 #dominant = mode(distances)
 
                 #closest = get_closest(not_similiar, dominant[0][0])
-                ##zakomentuj
                 
                 #np_similiar = np.array([item.color for item in closest])
                 #color = np_similiar.mean(axis = 0)

@@ -5,6 +5,7 @@ import numpy as np
 import pixel as pix
 import ntpath
 import glob
+import fuzzy as fz
 from scipy.stats import mode
 import utils
 from sklearn.cluster import DBSCAN
@@ -45,7 +46,7 @@ def get_submatrix(matrix, x, y):
     #return submatrix
 
 def get_closest(not_sim_list, mode):
-    closest_list = [elem for elem in not_sim_list if abs(elem.distance - mode) < 2]
+    closest_list = [elem for elem in not_sim_list if fz.is_near.eval(lab = abs(elem.distance - mode))]
     
     return closest_list
 
@@ -61,7 +62,7 @@ def denoise(pixel, img, denoised):
 def change_color(img, x, y):
     sub = get_submatrix(img, x, y)
                 
-    not_similiar = [elem for elem in sub.neighbourhood if elem.distance > 2]
+    not_similiar = [elem for elem in sub.neighbourhood if fz.not_similiar.eval(lab = elem.distance)]
                 
     distances = [elem.distance for elem in not_similiar]
     dominant = mode(distances)
